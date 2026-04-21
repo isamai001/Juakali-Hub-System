@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    ============================================================
+    JuaKaliHub — Workers Directory
+    ============================================================
+    Save this file at: juakalihub/public/workers.html
+  -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="JuaKaliHub — Find skilled artisans and workers across Kenya." />
+  <title>JuaKaliHub | Workers</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Inline CSS (copied from index.html/login.html for consistency) -->
+  <style>
+    :root {
+      --clr-bg: #0d1117;
+      --clr-surface: #161b22;
+      --clr-border: #21262d;
+      --clr-accent: #f0a500;
+      --clr-accent-dim: #c47f00;
+      --clr-green: #3fb950;
+      --clr-text: #e6edf3;
+      --clr-muted: #8b949e;
+      --clr-nav-bg: rgba(13,17,23,0.82);
+
+      --font-display: "Syne", sans-serif;
+      --font-body: "Noto Sans", sans-serif;
+
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+
+      --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+      --transition: 0.22s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--clr-bg);
+      color: var(--clr-text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    .container { width: 90%; max-width: 1140px; margin-inline: auto; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.7rem 1.6rem; border-radius: var(--radius-sm);
+      font-family: var(--font-body); font-size: 0.95rem;
+      font-weight: 600; cursor: pointer; border: none;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-primary { background: var(--clr-accent); color: #000; }
+    .btn-primary:hover { background: var(--clr-accent-dim); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(240,165,0,0.35); }
+    .btn-outline { background: transparent; color: var(--clr-text); border: 1.5px solid var(--clr-border); }
+    .btn-outline:hover { border-color: var(--clr-accent); color: var(--clr-accent); transform: translateY(-2px); }
+
+    /* Navbar (reuse) */
+    .navbar { position: fixed; top:0; left:0; right:0; z-index:100; background: var(--clr-nav-bg); backdrop-filter: blur(14px); border-bottom: 1px solid var(--clr-border); }
+    .navbar__inner { display:flex; align-items:center; justify-content:space-between; padding:0.9rem 0; }
+    .navbar__logo { font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; color: var(--clr-text); }
+    .navbar__logo span { color: var(--clr-accent); }
+    .navbar__links { display:flex; gap:2rem; list-style:none; }
+    .navbar__links a { font-size:0.9rem; font-weight:500; color: var(--clr-muted); position:relative; transition: color var(--transition); }
+    .navbar__links a::after { content:""; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:var(--clr-accent); border-radius:2px; transition:width var(--transition); }
+    .navbar__links a:hover { color: var(--clr-text); }
+    .navbar__links a:hover::after { width:100%; }
+    .navbar__cta { padding: 0.45rem 1.1rem; font-size:0.88rem; }
+
+    /* Hamburger (mobile) */
+    .hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; }
+    .hamburger span { display:block; width:24px; height:2px; background: var(--clr-text); border-radius:2px; transition: transform var(--transition), opacity var(--transition); }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity:0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; flex-direction:column; gap:0; padding:0.5rem 0 1rem; border-top:1px solid var(--clr-border); }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu a { padding:0.75rem 0; font-weight:500; color: var(--clr-muted); transition: color var(--transition); }
+    .mobile-menu a:hover { color: var(--clr-accent); }
+
+    /* Workers Section */
+    .workers-section { padding-top:100px; padding-bottom:80px; }
+    .workers-section h2 { font-family: var(--font-display); font-size:2rem; font-weight:800; margin-bottom:2rem; text-align:center; }
+    .workers-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:2rem; }
+    .worker-card {
+      background: var(--clr-surface); border:1px solid var(--clr-border);
+      border-radius: var(--radius-lg); padding:1.5rem; text-align:center;
+      box-shadow: var(--shadow-card); transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .worker-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .worker-card img { width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:1rem; }
+    .worker-card h3 { font-family: var(--font-display); font-size:1.2rem; font-weight:700; margin-bottom:0.3rem; }
+    .worker-card p { font-size:0.88rem; color: var(--clr-muted); margin-bottom:0.8rem; }
+    .worker-card .btn-primary { width:100%; margin-top:0.5rem; }
+
+    @media(max-width:768px) {
+      .hamburger { display:flex; }
+      .navbar__links { display:none; }
+      .navbar__cta { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION BAR -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="navbar__inner">
+        <a href="index.html" class="navbar__logo">JuaKali<span>Hub</span></a>
+
+        <ul class="navbar__links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="workers.html">Workers</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="register.html">Register</a></li>
+        </ul>
+
+        <a href="login.html" class="btn btn-primary navbar__cta">Login</a>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
+      <div class="mobile-menu" id="mobileMenu" role="menu">
+        <a href="index.html">Home</a>
+        <a href="workers.html">Workers</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- WORKERS SECTION -->
+  <section class="workers-section container">
+    <h2>Our Skilled Workers</h2>
+    <div class="workers-grid">
+      <!-- Worker Card Example -->
+      <div class="worker-card">
+        <img src="https://via.placeholder.com/100" alt="Worker Photo">
+        <h3>John Mwangi</h3>
+        <p>Carpenter — Nairobi</p>
+        <button class="btn btn-primary">View Profile</button>
+      </div>
+
+      <div class="worker-card">
+        <img src="https://via.placeholder.com/100" alt="Worker Photo">
+        <h3>Mary Atieno</h3>
+        <p>Electrician — Mombasa</p>
+        <button class="btn btn-primary">View Profile</button>
+      </div>
+
+      <div class="worker-card">
+        <img src="https://via.placeholder.com/100" alt="Worker Photo">
+        <h3>Peter Ochieng</h3>
+        <p>Plumber — Kisumu</p>
+        <button class="btn btn-primary">View Profile</button>
+      </div>
+
+      <div class="worker-card">
+        <img src="https://via.placeholder.com/100" alt="Worker Photo">
+        <h3>Jane Wanjiku</h3>
+        <p>Welder — Nakuru</p>
+        <button class="btn btn-primary">View Profile</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Mobile hamburger toggle
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
