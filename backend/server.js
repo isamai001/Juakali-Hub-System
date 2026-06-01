@@ -22,6 +22,14 @@ require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
 
+// ── Database connection ──────────────────────────────────────
+const db = require("./src/config/database");
+
+// ── Import routes ───────────────────────────────────────────
+const authRoutes   = require("./src/routes/authRoutes");
+const workerRoutes = require("./src/routes/workerRoutes");
+const jobRoutes    = require("./src/routes/jobRoutes");
+
 // ── Initialise Express application ──────────────────────────
 const app = express();
 
@@ -68,24 +76,10 @@ app.get("/", (req, res) => {
   });
 });
 
-/**
- * TODO: Mount feature routers here as you build them out.
- *
- * Example:
- *   const authRoutes   = require("./src/modules/auth/authRoutes");
- *   const workerRoutes = require("./src/modules/workers/workerRoutes");
- *   const clientRoutes = require("./src/modules/clients/clientRoutes");
- *   const jobRoutes    = require("./src/modules/jobs/jobRoutes");
- *   const reviewRoutes = require("./src/modules/reviews/reviewRoutes");
- *   const adminRoutes  = require("./src/modules/admin/adminRoutes");
- *
- *   app.use("/api/v1/auth",    authRoutes);
- *   app.use("/api/v1/workers", workerRoutes);
- *   app.use("/api/v1/clients", clientRoutes);
- *   app.use("/api/v1/jobs",    jobRoutes);
- *   app.use("/api/v1/reviews", reviewRoutes);
- *   app.use("/api/v1/admin",   adminRoutes);
- */
+// ── Feature routes ───────────────────────────────────────────
+app.use("/api/v1/auth",    authRoutes);
+app.use("/api/v1/workers", workerRoutes);
+app.use("/api/v1/jobs",    jobRoutes);
 
 // ============================================================
 // 404 — Unknown Route Handler
@@ -98,6 +92,61 @@ app.use((req, res) => {
 });
 
 // ============================================================
+// ERROR HANDLING MIDDLEWARE
+// ============================================================
+app.use((error, req, res, next) => {
+  console.error("Unhandled error:", error);
+  res.status(500).json({
+    success: false,
+    message: "Internal server error",
+    error: error.message,
+  });
+});
+
+// ============================================================
+// SERVER STARTUP
+// ============================================================
+const startServer = async () => {
+  try {
+    // Test database connection
+    const dbConnected = await db.testConnection();
+    
+    if (!dbConnected) {
+      console.error("Failed to connect to database. Exiting...");
+      process.exit(1);
+    }
+
+    // Start listening
+    app.listen(PORT, () => {
+      console.log(`
+╔════════════════════════════════════════╗
+║   JuaKaliHub API Server Started        ║
+╠════════════════════════════════════════╣
+║   Port: ${PORT}                              ║
+║   Environment: ${process.env.NODE_ENV || "development"}              ║
+║   Database: ${process.env.DB_NAME || "juakalihub_db"}        ║
+╚════════════════════════════════════════╝
+      `);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+// Handle graceful shutdown
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received. Shutting down gracefully...");
+  process.exit(0);
+});
+
+process.on("SIGINT", () => {
+  console.log("SIGINT received. Shutting down gracefully...");
+  process.exit(0);
+});
+
 // GLOBAL ERROR HANDLER
 // ============================================================
 /**
